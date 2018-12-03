@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.lima.model.Convidado;
 import br.com.lima.repository.ConvidadoRepository;
+import br.lima.enviaEmail.EmailService;
 
 /**
  * @author user
@@ -45,6 +46,9 @@ public class ConvidadoController {
 		Convidado convidado = new Convidado(nome, email, telefone);
 		
 		convidadoDAO.save(convidado);
+		
+		EmailService emailService = new EmailService();
+		emailService.enviar(nome, email);
 		
 		Iterable<Convidado> convidados = convidadoDAO.findAll();
 		
