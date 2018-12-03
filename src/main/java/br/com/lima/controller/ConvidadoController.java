@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.lima.model.Convidado;
-import br.com.lima.repository.ConvidadoRepository;
+import br.com.lima.service.ConvidadoService;
 import br.lima.enviaEmail.EmailService;
 
 /**
@@ -22,8 +22,8 @@ import br.lima.enviaEmail.EmailService;
 public class ConvidadoController {
 
 	@Autowired
-	private ConvidadoRepository convidadoDAO;
-
+	ConvidadoService convidadoService;
+	
 	@RequestMapping("/")
 	public String index() {
 		return "index";
@@ -32,7 +32,7 @@ public class ConvidadoController {
 	@RequestMapping("listaconvidados")
 	public String listaConvidados(Model model) {
 
-		Iterable<Convidado> convidados = convidadoDAO.findAll();
+		Iterable<Convidado> convidados = convidadoService.getTodos();
 
 		model.addAttribute("convidados", convidados);
 
@@ -45,12 +45,12 @@ public class ConvidadoController {
 
 		Convidado convidado = new Convidado(nome, email, telefone);
 		
-		convidadoDAO.save(convidado);
+		convidadoService.salvar(convidado);
 		
 		EmailService emailService = new EmailService();
 		emailService.enviar(nome, email);
 		
-		Iterable<Convidado> convidados = convidadoDAO.findAll();
+		Iterable<Convidado> convidados = convidadoService.getTodos();
 		
 		model.addAttribute("convidados", convidados);
 		return "listaconvidados";
